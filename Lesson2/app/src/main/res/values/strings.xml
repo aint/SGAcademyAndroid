@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lesson2</string>
+    <string name="exit_button">Exit</string>
+    <string name="view_button">View</string>
+    <string name="profile_image_desc">Profile image</string>
+    <string name="back_button">Back</string>
+</resources>
