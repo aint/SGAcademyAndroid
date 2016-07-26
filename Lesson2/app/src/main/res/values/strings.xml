@@ -4,4 +4,12 @@
     <string name="view_button">View</string>
     <string name="profile_image_desc">Profile image</string>
     <string name="back_button">Back</string>
+    <string name="first_name_textview">First Name</string>
+    <string name="last_name_textview">Last Name</string>
+    <string name="age_textview">Age</string>
+    <string name="sex_textview">Sex</string>
+    <string name="location_textview">Location</string>
+    <string name="salary_textview">Salary</string>
+    <string name="occupation_textview">Occupation</string>
+    <string name="full_name_textview">Full Name</string>
 </resources>

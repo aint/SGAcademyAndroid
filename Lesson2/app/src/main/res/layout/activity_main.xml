@@ -8,15 +8,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.github.aint.lesson2.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <TextView
-        android:id="@+id/fullNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SomeText"
-        android:textSize="25sp"
-        android:paddingBottom="15.0dip"
+        android:id="@+id/fullNameTextView"
+        android:text="@string/full_name_textview"
+        android:textSize="35sp"
+        android:paddingBottom="50dp"
         android:layout_above="@+id/linearLayout"
         android:layout_centerHorizontal="true"/>
 
@@ -32,20 +32,16 @@
         android:layout_centerVertical="true">
 
         <Button
-            android:id="@+id/exitButton"
-            android:layout_width="0.0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
             style="@style/RoundButton"
+            android:layout_weight="1.0"
+            android:id="@+id/exitButton"
             android:text="@string/exit_button"
             android:onClick="onExitButtonClick"/>
 
         <Button
-            android:id="@+id/viewButton"
-            android:layout_width="0.0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
             style="@style/RoundButton"
+            android:layout_weight="1.0"
+            android:id="@+id/viewButton"
             android:text="@string/view_button"
             android:onClick="onViewButtonClick"/>
 
