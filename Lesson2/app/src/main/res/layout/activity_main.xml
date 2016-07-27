@@ -10,15 +10,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fullNameTextView"
-        android:text="@string/full_name_textview"
-        android:textSize="35sp"
-        android:paddingBottom="50dp"
-        android:layout_above="@+id/linearLayout"
-        android:layout_centerHorizontal="true"/>
+        android:id="@+id/displayPersonLayout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/noPersonTextView"
+                android:text="@string/no_person_textview"
+                android:textSize="30sp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -43,7 +53,7 @@
             android:layout_weight="1.0"
             android:id="@+id/viewButton"
             android:text="@string/view_button"
-            android:onClick="onViewButtonClick"/>
+            android:onClick="onClick"/>
 
     </LinearLayout>
 </RelativeLayout>
