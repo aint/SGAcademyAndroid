@@ -52,8 +52,8 @@
             style="@style/RoundButton"
             android:layout_weight="1.0"
             android:id="@+id/viewButton"
-            android:text="@string/view_button"
-            android:onClick="onClick"/>
+            android:text="@string/add_button"
+            android:onClick="onAddButtonClick"/>
 
     </LinearLayout>
 </RelativeLayout>

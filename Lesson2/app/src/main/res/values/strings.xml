@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Lesson2</string>
     <string name="exit_button">Exit</string>
-    <string name="view_button">View</string>
+    <string name="add_button">Add</string>
     <string name="profile_image_desc">Profile image</string>
     <string name="back_button">Back</string>
     <string name="first_name_textview">First Name</string>
@@ -12,4 +12,6 @@
     <string name="salary_textview">Salary</string>
     <string name="occupation_textview">Occupation</string>
     <string name="no_person_textview">No person yet</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
 </resources>

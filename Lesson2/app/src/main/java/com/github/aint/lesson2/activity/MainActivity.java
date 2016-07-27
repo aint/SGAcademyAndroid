@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -20,8 +19,6 @@ import com.github.aint.lesson2.model.Person;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -30,10 +27,11 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
+    public static final String PERSON_PREFS_NAME = "person_prefs";
+    public static final String PERSON_KEYS = "person_keys";
     public static final String PERSON_ATTRIBUTE = "person";
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String PERSON_KEYS = "person_keys";
     private static final int TEXT_SIZE = 30;
 
     private SharedPreferences sharedPreferences;
@@ -44,9 +42,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("person_prefs", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_APPEND);
 
-        setPersons();
+//        setPersons();
         getPersons();
 
         displayPersons();
@@ -101,50 +99,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private void setPersons() {
-        new WritePersonsToPrefsTask().execute(
-                new Person("Ivan", "Ivanov", 25, "male", 999.9, "Rivne", "Developer"),
-                new Person("Stepan", "Stepanov", 15, "male", 777.7, "Lviv", "Designer"),
-                new Person("Petro", "Petrov", 20, "male", 555.5, "Lursk", "Tester")
-        );
-    }
-
-    private class WritePersonsToPrefsTask extends AsyncTask<Person, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Person... persons) {
-            saveToPrefs(PERSON_KEYS, convertPersons(persons));
-            return null;
-        }
-
-        private void saveToPrefs(String key, Set<String> values) {
-            sharedPreferences.edit()
-                    .putStringSet(key, values)
-                    .apply();
-        }
-
-        private Set<String> convertPersons(Person... persons) {
-            Set<String> personSet = new HashSet<>();
-            for (Person person : persons) {
-                personSet.add(personToString(person));
-            }
-            return personSet;
-        }
-
-        private String personToString(Person person) {
-            return TextUtils.join(":", Arrays.asList(
-                    person.getId(),
-                    person.getFirstName(),
-                    person.getLastName(),
-                    String.valueOf(person.getAge()),
-                    person.getSex(),
-                    String.valueOf(person.getSalary()),
-                    person.getLocation(),
-                    person.getOccupation()
-            ));
-        }
-    }
-
     private void displayPersons() {
         for (Person person : mPersons) {
             addPersonNameToLayout(person.getId(), person.getFirstName() + " " + person.getLastName());
@@ -185,6 +139,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void onExitButtonClick(View view) {
         finish();
+    }
+
+    public void onAddButtonClick(View view) {
+        startActivity(new Intent(this, AddPersonActivity.class));
     }
 
     @Override

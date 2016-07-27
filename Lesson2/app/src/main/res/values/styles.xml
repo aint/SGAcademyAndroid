@@ -23,4 +23,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="editText" parent="@android:style/Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>
