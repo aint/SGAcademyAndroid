@@ -19,6 +19,7 @@ import com.github.aint.lesson2.model.Person;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_APPEND);
+        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
 
         getPersons();
         displayPersons();
@@ -67,15 +68,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         private List<Person> getPersonsFromPrefs() {
-            return stringSetToPersonList(sharedPreferences.getStringSet(PERSON_KEYS, null));
+            return stringSetToPersonList(sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>()));
         }
 
         private List<Person> stringSetToPersonList(Set<String> personSet) {
             List<Person> personList = new ArrayList<>();
-            if (personSet != null) {
-                for (String value : personSet) {
-                    personList.add(stringToPerson(value));
-                }
+            for (String value : personSet) {
+                personList.add(stringToPerson(value));
             }
             return personList;
         }
@@ -136,9 +135,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     public void onExitButtonClick(View view) {
         finish();
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
     }
 
     public void onAddButtonClick(View view) {
+        finish();
         startActivity(new Intent(this, AddPersonActivity.class));
     }
 

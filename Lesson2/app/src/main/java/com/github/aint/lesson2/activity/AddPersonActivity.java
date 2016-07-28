@@ -32,7 +32,7 @@ public class AddPersonActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_view_layout);
 
-        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_APPEND);
+        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
 
         setVisibleAddComponents();
         setInvisibleViewComponents();
@@ -51,6 +51,7 @@ public class AddPersonActivity extends Activity {
             personSet.addAll(values);
             sharedPreferences.edit()
                     .putStringSet(PERSON_KEYS, personSet)
+                    .clear()
                     .apply();
         }
 
@@ -124,7 +125,8 @@ public class AddPersonActivity extends Activity {
     }
 
     public void onCancelButtonClick(View view) {
-        onBackPressed();
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 }
