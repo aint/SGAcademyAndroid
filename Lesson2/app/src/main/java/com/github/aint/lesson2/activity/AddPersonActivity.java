@@ -42,13 +42,15 @@ public class AddPersonActivity extends Activity {
 
         @Override
         protected Void doInBackground(Person... persons) {
-            saveToPrefs(PERSON_KEYS, convertPersons(persons));
+            appendToPrefs(convertPersons(persons));
             return null;
         }
 
-        private void saveToPrefs(String key, Set<String> values) {
+        private void appendToPrefs(Set<String> values) {
+            Set<String> personSet = sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>());
+            personSet.addAll(values);
             sharedPreferences.edit()
-                    .putStringSet(key, values)
+                    .putStringSet(PERSON_KEYS, personSet)
                     .apply();
         }
 
