@@ -44,11 +44,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_APPEND);
 
-//        setPersons();
         getPersons();
-
         displayPersons();
-
         setNoPersonTextView();
     }
 

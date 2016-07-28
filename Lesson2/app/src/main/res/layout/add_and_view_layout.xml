@@ -25,6 +25,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/viewLayout"
+            android:visibility="visible"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -69,6 +71,56 @@
                 android:text="@string/occupation_textview"/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/editLayout"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center">
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/firstNameEditText"
+                android:hint="@string/first_name_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/lastNameEditText"
+                android:hint="@string/last_name_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/ageEditText"
+                android:inputType="numberDecimal"
+                android:hint="@string/age_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/sexEditText"
+                android:hint="@string/sex_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/locationEditText"
+                android:hint="@string/location_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/salaryEditText"
+                android:inputType="number"
+                android:hint="@string/salary_textview"/>
+
+            <EditText
+                style="@style/editText"
+                android:id="@+id/occupationEditText"
+                android:hint="@string/occupation_textview"/>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -88,13 +140,27 @@
             android:onClick="onBackButtonClick"/>
 
         <Button
-            android:layout_width="0.0dip"
-            android:layout_height="fill_parent"
             android:layout_weight="1.0"
             android:id="@+id/exitButton"
             style="@style/RoundButton"
             android:text="@string/exit_button"
             android:onClick="onExitButtonClick"/>
+
+        <Button
+            android:layout_weight="1.0"
+            android:visibility="gone"
+            android:id="@+id/cancelButton"
+            style="@style/RoundButton"
+            android:text="@string/cancel_button"
+            android:onClick="onCancelButtonClick"/>
+
+        <Button
+            android:layout_weight="1.0"
+            android:id="@+id/saveButton"
+            android:visibility="gone"
+            style="@style/RoundButton"
+            android:text="@string/save_button"
+            android:onClick="onSaveButtonClick"/>
 
     </LinearLayout>
 

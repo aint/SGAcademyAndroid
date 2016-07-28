@@ -16,10 +16,25 @@ public class ViewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_layout);
+        setContentView(R.layout.add_and_view_layout);
+
+        setVisibleViewComponents();
+        setInvisibleAddComponents();
 
         person = getPerson();
         setTextViews();
+    }
+
+    private void setVisibleViewComponents() {
+        findViewById(R.id.viewLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.backButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.exitButton).setVisibility(View.VISIBLE);
+    }
+
+    private void setInvisibleAddComponents() {
+        findViewById(R.id.editLayout).setVisibility(View.GONE);
+        findViewById(R.id.cancelButton).setVisibility(View.GONE);
+        findViewById(R.id.saveButton).setVisibility(View.GONE);
     }
 
     private void setTextViews() {
