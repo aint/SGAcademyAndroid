@@ -100,16 +100,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void displayPersons() {
-//        for (Person person : mPersons) {
-//            addPersonNameToLayout(person.getId(), person.getFirstName() + " " + person.getLastName());
-//        }
-        String[] fNames = new String[mPersons.size()];
-        String[] lNames = new String[mPersons.size()];
-        for (int i = 0; i < mPersons.size(); i++) {
-            fNames[i] = mPersons.get(i).getFirstName();
-            lNames[i] = mPersons.get(i).getLastName();
-        }
-//        listView.setAdapter(new CustomAdapter(this, fNames, lNames));
+        listView.setAdapter(new PersonArrayAdapter(this, mPersons));
 
     }
 
