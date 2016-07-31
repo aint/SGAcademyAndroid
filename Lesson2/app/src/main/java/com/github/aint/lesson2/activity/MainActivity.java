@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.aint.lesson2.R;
@@ -37,6 +38,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private SharedPreferences sharedPreferences;
     private List<Person> mPersons;
+    private ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
+        listView = (ListView) findViewById(R.id.listView);
 
         getPersons();
         displayPersons();
@@ -96,16 +100,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void displayPersons() {
-        for (Person person : mPersons) {
-            addPersonNameToLayout(person.getId(), person.getFirstName() + " " + person.getLastName());
+//        for (Person person : mPersons) {
+//            addPersonNameToLayout(person.getId(), person.getFirstName() + " " + person.getLastName());
+//        }
+        String[] fNames = new String[mPersons.size()];
+        String[] lNames = new String[mPersons.size()];
+        for (int i = 0; i < mPersons.size(); i++) {
+            fNames[i] = mPersons.get(i).getFirstName();
+            lNames[i] = mPersons.get(i).getLastName();
         }
-    }
-
-    private void addPersonNameToLayout(int id, String fullName) {
-        ((LinearLayout) findViewById(R.id.displayPersonLayout))
-                .addView(createLinearLayoutWithText(id, createTextView(fullName)));
+//        listView.setAdapter(new CustomAdapter(this, fNames, lNames));
 
     }
+
+//    private void addPersonNameToLayout(int id, String fullName) {
+//        ((LinearLayout) findViewById(R.id.displayPersonLayout))
+//                .addView(createLinearLayoutWithText(id, createTextView(fullName)));
+//
+//    }
 
     private TextView createTextView(String fullName) {
         TextView textView = new TextView(this);
