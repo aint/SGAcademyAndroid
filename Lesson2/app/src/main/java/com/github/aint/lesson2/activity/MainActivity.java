@@ -7,12 +7,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.aint.lesson2.R;
 import com.github.aint.lesson2.model.Person;
@@ -25,16 +22,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
     public static final String PERSON_PREFS_NAME = "person_prefs";
     public static final String PERSON_KEYS = "person_keys";
     public static final String PERSON_ATTRIBUTE = "person";
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final int TEXT_SIZE = 30;
 
     private SharedPreferences sharedPreferences;
     private List<Person> mPersons;
@@ -47,7 +41,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
+
         listView = (ListView) findViewById(R.id.listView);
+        listView.setOnItemClickListener(this);
 
         getPersons();
         displayPersons();
@@ -104,34 +100,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-//    private void addPersonNameToLayout(int id, String fullName) {
-//        ((LinearLayout) findViewById(R.id.displayPersonLayout))
-//                .addView(createLinearLayoutWithText(id, createTextView(fullName)));
-//
-//    }
-
-    private TextView createTextView(String fullName) {
-        TextView textView = new TextView(this);
-        textView.setText(fullName);
-        textView.setTextSize(TEXT_SIZE);
-        return textView;
-    }
-
-    private LinearLayout createLinearLayoutWithText(int id, TextView textView) {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setId(id);
-        layout.setLayoutParams(getCentredLayoutParams());
-        layout.setOnClickListener(this);
-        layout.addView(textView);
-        return layout;
-    }
-
-    private LayoutParams getCentredLayoutParams() {
-        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        return layoutParams;
-    }
-
     private void setNoPersonTextView() {
         findViewById(R.id.noPersonTextView).setVisibility(mPersons.isEmpty() ? View.VISIBLE : View.GONE);
     }
@@ -150,13 +118,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        for (Person person : mPersons) {
-            if (v.getId() == person.getId()) {
-                startActivity(new Intent(this, ViewActivity.class).putExtra(PERSON_ATTRIBUTE, person));
-                return;
-            }
-        }
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        startActivity(new Intent(this, ViewActivity.class)
+                .putExtra(PERSON_ATTRIBUTE, (Person) parent.getItemAtPosition(position)));
     }
 
 }
