@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.github.aint.lesson2.R;
+import com.github.aint.lesson2.adapter.PersonArrayAdapter;
 import com.github.aint.lesson2.model.Person;
 
 import java.io.PrintWriter;
@@ -19,45 +20,50 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+
+    private static final String LOG_TAG = MainActivity.class.getName();
 
     public static final String PERSON_PREFS_NAME = "person_prefs";
     public static final String PERSON_KEYS = "person_keys";
     public static final String PERSON_ATTRIBUTE = "person";
 
-    private static final String LOG_TAG = MainActivity.class.getName();
-
     private SharedPreferences sharedPreferences;
-    private List<Person> mPersons;
-    private ListView listView;
+    private List<Person> persons;
+    @BindView(R.id.listView) ListView listView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
-
-        listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
 
         getPersons();
-        displayPersons();
+        setPersonsToAdapter();
         setNoPersonTextView();
     }
 
     private void getPersons() {
         try {
-            mPersons = new ReadPersonsFromPrefsTask().execute().get();
+            persons = new ReadPersonsFromPrefsTask().execute().get();
         } catch (InterruptedException | ExecutionException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             Log.e(LOG_TAG, sw.toString());
         }
+    }
+
+    private void setPersonsToAdapter() {
+        listView.setAdapter(new PersonArrayAdapter(this, persons));
     }
 
     private class ReadPersonsFromPrefsTask extends AsyncTask<Void, Void, List<Person>> {
@@ -68,12 +74,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         }
 
         private List<Person> getPersonsFromPrefs() {
-            return stringSetToPersonList(sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>()));
+            return stringSetToPersonList();
         }
 
-        private List<Person> stringSetToPersonList(Set<String> personSet) {
+        private List<Person> stringSetToPersonList() {
             List<Person> personList = new ArrayList<>();
-            for (String value : personSet) {
+            for (String value : sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>())) {
                 personList.add(stringToPerson(value));
             }
             return personList;
@@ -95,13 +101,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     }
 
-    private void displayPersons() {
-        listView.setAdapter(new PersonArrayAdapter(this, mPersons));
-
-    }
-
     private void setNoPersonTextView() {
-        findViewById(R.id.noPersonTextView).setVisibility(mPersons.isEmpty() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.noPersonTextView).setVisibility(persons.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     public void onExitButtonClick(View view) {

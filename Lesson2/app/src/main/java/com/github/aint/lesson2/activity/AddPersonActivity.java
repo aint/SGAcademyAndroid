@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -18,6 +19,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.github.aint.lesson2.activity.MainActivity.PERSON_KEYS;
 import static com.github.aint.lesson2.activity.MainActivity.PERSON_PREFS_NAME;
 
@@ -27,10 +31,19 @@ public class AddPersonActivity extends Activity {
     private String firstName;
     private String lastName;
 
+    @BindView(R.id.firstNameEditText) EditText firstNameEditText;
+    @BindView(R.id.lastNameEditText) EditText lastNameEditText;
+    @BindView(R.id.ageEditText) EditText ageEditText;
+    @BindView(R.id.sexEditText) EditText sexEditText;
+    @BindView(R.id.salaryEditText) EditText salaryEditText;
+    @BindView(R.id.locationEditText) EditText locationEditText;
+    @BindView(R.id.occupationEditText) EditText occupationEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_view_layout);
+        ButterKnife.bind(this);
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -83,28 +96,30 @@ public class AddPersonActivity extends Activity {
         }
         new WritePersonsToPrefsTask().execute(constructNewPerson());
 
-        finish();
-        startActivity(new Intent(this, MainActivity.class));
+        finishAndStartMainActivity();
     }
 
     private Person constructNewPerson() {
-        String age = ((EditText) findViewById(R.id.ageEditText)).getText().toString();
-        String sex = ((EditText) findViewById(R.id.sexEditText)).getText().toString();
-        String salary = ((EditText) findViewById(R.id.salaryEditText)).getText().toString();
-        String location = ((EditText) findViewById(R.id.locationEditText)).getText().toString();
-        String occupation = ((EditText) findViewById(R.id.occupationEditText)).getText().toString();
         return new Person(firstName, lastName,
-                age.isEmpty() ? 0 : Integer.valueOf(age),
-                sex.isEmpty() ? "_" : sex,
-                salary.isEmpty() ? 0.0 : Double.valueOf(salary),
-                location .isEmpty() ? "_" : location,
-                occupation.isEmpty() ? "_" : occupation
+                Integer.valueOf(getZeroIfEmpty(ageEditText.getText())),
+                getDashIfEmpty(sexEditText.getText()),
+                Double.valueOf(getZeroIfEmpty(salaryEditText.getText())),
+                getDashIfEmpty(locationEditText.getText()),
+                getDashIfEmpty(locationEditText.getText())
         );
     }
 
+    private String getDashIfEmpty(Editable text) {
+        return text.toString().isEmpty() ? "-" : text.toString();
+    }
+
+    private String getZeroIfEmpty(Editable text) {
+        return text.toString().isEmpty() ? "0" : text.toString();
+    }
+
     private boolean validateFullName() {
-        firstName = ((EditText) findViewById(R.id.firstNameEditText)).getText().toString();
-        lastName = ((EditText) findViewById(R.id.lastNameEditText)).getText().toString();
+        firstName = firstNameEditText.getText().toString();
+        lastName = lastNameEditText.getText().toString();
         if (firstName.isEmpty() || lastName.isEmpty()) {
             Toast.makeText(this, "Full name is required", Toast.LENGTH_SHORT).show();
             return false;
@@ -124,9 +139,13 @@ public class AddPersonActivity extends Activity {
         findViewById(R.id.exitButton).setVisibility(View.GONE);
     }
 
-    public void onCancelButtonClick(View view) {
+    private void finishAndStartMainActivity() {
         finish();
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    public void onCancelButtonClick(View view) {
+        finishAndStartMainActivity();
     }
 
 }

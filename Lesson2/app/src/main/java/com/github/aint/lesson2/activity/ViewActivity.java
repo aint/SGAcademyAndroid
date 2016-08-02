@@ -9,14 +9,27 @@ import android.widget.TextView;
 import com.github.aint.lesson2.R;
 import com.github.aint.lesson2.model.Person;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ViewActivity extends Activity {
 
     private Person person;
+
+    @BindView(R.id.firstNameTextView) TextView firstNameTextView;
+    @BindView(R.id.lastNameTextView) TextView lastNameTextView;
+    @BindView(R.id.ageTextView) TextView ageTextView;
+    @BindView(R.id.sexTextView) TextView sexTextView;
+    @BindView(R.id.salaryTextView) TextView salaryTextView;
+    @BindView(R.id.locationTextView) TextView locationTextView;
+    @BindView(R.id.occupationTextView) TextView occupationTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_view_layout);
+        ButterKnife.bind(this);
 
         setVisibleViewComponents();
         setInvisibleAddComponents();
@@ -37,18 +50,18 @@ public class ViewActivity extends Activity {
         findViewById(R.id.saveButton).setVisibility(View.GONE);
     }
 
-    private void setTextViews() {
-        ((TextView) findViewById(R.id.firstNameTextView)).setText(person.getFirstName());
-        ((TextView) findViewById(R.id.lastNameTextView)).setText(person.getLastName());
-        ((TextView) findViewById(R.id.ageTextView)).setText(String.valueOf(person.getAge()));
-        ((TextView) findViewById(R.id.sexTextView)).setText(person.getSex());
-        ((TextView) findViewById(R.id.locationTextView)).setText(person.getLocation());
-        ((TextView) findViewById(R.id.salaryTextView)).setText(String.valueOf(person.getSalary()));
-        ((TextView) findViewById(R.id.occupationTextView)).setText(person.getOccupation());
-    }
-
     private Person getPerson() {
         return (Person) getIntent().getSerializableExtra(MainActivity.PERSON_ATTRIBUTE);
+    }
+
+    private void setTextViews() {
+        firstNameTextView.setText(person.getFirstName());
+        lastNameTextView.setText(person.getLastName());
+        ageTextView.setText(String.valueOf(person.getAge()));
+        sexTextView.setText(person.getSex());
+        locationTextView.setText(person.getLocation());
+        salaryTextView.setText(String.valueOf(person.getSalary()));
+        occupationTextView.setText(person.getOccupation());
     }
 
     public void onBackButtonClick(View view) {
