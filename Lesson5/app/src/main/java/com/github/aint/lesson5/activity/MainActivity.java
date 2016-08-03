@@ -1,18 +1,21 @@
 package com.github.aint.lesson5.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.github.aint.lesson5.R;
-import com.github.aint.lesson5.adapter.PersonArrayAdapter;
+import com.github.aint.lesson5.fragment.ViewPersonFragment;
 import com.github.aint.lesson5.model.Person;
 
 import java.io.PrintWriter;
@@ -22,10 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MainActivity extends FragmentActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
@@ -35,7 +37,29 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     private SharedPreferences sharedPreferences;
     private List<Person> persons;
-    @BindView(R.id.listView) ListView listView;
+
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PERSON_ATTRIBUTE, persons.get(position));
+            ViewPersonFragment viewPersonFragment = new ViewPersonFragment();
+            viewPersonFragment.setArguments(bundle);
+            return viewPersonFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return persons.size();
+        }
+    }
 
 
     @Override
@@ -45,11 +69,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         ButterKnife.bind(this);
 
         sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
-        listView.setOnItemClickListener(this);
 
         getPersons();
-        setPersonsToAdapter();
+//        setPersonsToAdapter();
         setNoPersonTextView();
+
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+
     }
 
     private void getPersons() {
@@ -63,7 +91,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     private void setPersonsToAdapter() {
-        listView.setAdapter(new PersonArrayAdapter(this, persons));
+//        listView.setAdapter(new PersonArrayAdapter(this, persons));
     }
 
     private class ReadPersonsFromPrefsTask extends AsyncTask<Void, Void, List<Person>> {
@@ -119,9 +147,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(this, ViewActivity.class)
-                .putExtra(PERSON_ATTRIBUTE, (Person) parent.getItemAtPosition(position)));
+    public void onBackPressed() {
+        if (mPager.getCurrentItem() == 0) {
+            super.onBackPressed();
+        } else {
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
     }
 
 }
