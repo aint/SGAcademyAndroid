@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.github.aint.lesson5.R;
 import com.github.aint.lesson5.activity.MainActivity;
@@ -33,9 +34,13 @@ public class PersonImageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_person, container, false);
-//        ImageView personImage = (ImageView) view.findViewById(R.id.personImage);
-//        personImage.setImageResource(R.drawable.profile_image);
+        setPersonImage(view);
         return view;
+    }
+
+    private void setPersonImage(View view) {
+        ImageView personImage = (ImageView) view.findViewById(R.id.personImage);
+        personImage.setImageResource(person.getImageId());
     }
 
 }

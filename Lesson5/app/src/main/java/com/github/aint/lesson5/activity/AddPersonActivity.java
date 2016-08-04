@@ -78,7 +78,7 @@ public class AddPersonActivity extends Activity {
 
         private String personToString(Person person) {
             return TextUtils.join(":", Arrays.asList(
-                    person.getId(),
+                    person.getImageId(),
                     person.getFirstName(),
                     person.getLastName(),
                     String.valueOf(person.getAge()),
@@ -91,6 +91,11 @@ public class AddPersonActivity extends Activity {
     }
 
     public void onSaveButtonClick(View view) {
+//        Person messi = new Person(R.drawable.messi, "Lionel", "Messi", 29, "Male", 12345, "Barcelona", "Forward");
+//        Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real madrid", "Forward");
+//        Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
+//        Person neuer = new Person(R.drawable.neuer, "Manuel", "Neuer", 30, "Male", 45123, "Bayern", "Goalkeeper");
+//        new WritePersonsToPrefsTask().execute(messi, ronaldo, suarez, neuer);
         if (!validateFullName()) {
             return;
         }
@@ -100,7 +105,7 @@ public class AddPersonActivity extends Activity {
     }
 
     private Person constructNewPerson() {
-        return new Person(firstName, lastName,
+        return new Person(R.drawable.default_profile_image, firstName, lastName,
                 Integer.valueOf(getZeroIfEmpty(ageEditText.getText())),
                 getDashIfEmpty(sexEditText.getText()),
                 Double.valueOf(getZeroIfEmpty(salaryEditText.getText())),

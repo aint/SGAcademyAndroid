@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/personImage"
-            android:src="@drawable/profile_image"
+            android:src="@drawable/default_profile_image"
             android:contentDescription="@string/profile_image_desc"
             android:onClick="onImageClick"/>
     </LinearLayout>

@@ -1,10 +1,11 @@
 package com.github.aint.lesson5.fragment;
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.aint.lesson5.R;
@@ -25,6 +26,7 @@ public class PersonDetailsFragment extends Fragment {
     @BindView(R.id.salaryTextView) TextView salaryTextView;
     @BindView(R.id.locationTextView) TextView locationTextView;
     @BindView(R.id.occupationTextView) TextView occupationTextView;
+    @BindView(R.id.personImageView) ImageView personImage;
 
     public static PersonDetailsFragment newInstance(Person person) {
         PersonDetailsFragment fragment = new PersonDetailsFragment();
@@ -58,6 +60,7 @@ public class PersonDetailsFragment extends Fragment {
         locationTextView.setText(person.getLocation());
         salaryTextView.setText(String.valueOf(person.getSalary()));
         occupationTextView.setText(person.getOccupation());
+        personImage.setImageResource(person.getImageId());
     }
 
 }
