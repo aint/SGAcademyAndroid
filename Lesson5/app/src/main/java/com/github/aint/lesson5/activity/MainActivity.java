@@ -8,10 +8,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.github.aint.lesson5.R;
@@ -28,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
@@ -131,11 +133,6 @@ public class MainActivity extends FragmentActivity {
         startActivity(homeIntent);
     }
 
-    public void onAddButtonClick(View view) {
-        finish();
-        startActivity(new Intent(this, AddPersonActivity.class));
-    }
-
     public void onImageClick(View view) {
         mPager.setVisibility(View.GONE);
 
@@ -161,6 +158,25 @@ public class MainActivity extends FragmentActivity {
         } else {
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (R.id.menu_add == itemId) {
+            startActivity(new Intent(this, AddPersonActivity.class));
+        } else if (R.id.menu_setting == itemId) {
+
+        } else if (R.id.menu_exit == itemId) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class PersonImagePagerAdapter extends FragmentPagerAdapter {
