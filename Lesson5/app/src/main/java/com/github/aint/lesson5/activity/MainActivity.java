@@ -8,13 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
 import com.github.aint.lesson5.R;
+import com.github.aint.lesson5.fragment.PersonDetailsFragment;
 import com.github.aint.lesson5.fragment.ViewPersonFragment;
 import com.github.aint.lesson5.model.Person;
 
@@ -38,19 +39,25 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences sharedPreferences;
     private List<Person> persons;
 
+    private Person person;
+
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    private PersonDetailsFragment personDetailsFragment = new PersonDetailsFragment();
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    private class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
+
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
+            Log.e(LOG_TAG, "pos " + position);
+            person = persons.get(position);
             Bundle bundle = new Bundle();
-            bundle.putSerializable(PERSON_ATTRIBUTE, persons.get(position));
-            ViewPersonFragment viewPersonFragment = new ViewPersonFragment();
+            bundle.putSerializable(PERSON_ATTRIBUTE, person);
+            Fragment viewPersonFragment = new ViewPersonFragment();
             viewPersonFragment.setArguments(bundle);
             return viewPersonFragment;
         }
@@ -59,6 +66,7 @@ public class MainActivity extends FragmentActivity {
         public int getCount() {
             return persons.size();
         }
+
     }
 
 
@@ -77,6 +85,13 @@ public class MainActivity extends FragmentActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Log.e(LOG_TAG, "page " + position);
+                invalidateOptionsMenu();
+            }
+        });
 
     }
 
@@ -144,6 +159,28 @@ public class MainActivity extends FragmentActivity {
     public void onAddButtonClick(View view) {
         finish();
         startActivity(new Intent(this, AddPersonActivity.class));
+    }
+
+    public void onImageClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PERSON_ATTRIBUTE, person);
+        personDetailsFragment.setArguments(bundle);
+
+        mPager.setVisibility(View.GONE);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, personDetailsFragment)
+                .commit();
+    }
+
+    public void onBackButtonClick(View view) {
+        mPager.setVisibility(View.VISIBLE);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(personDetailsFragment)
+                .commit();
     }
 
     @Override
