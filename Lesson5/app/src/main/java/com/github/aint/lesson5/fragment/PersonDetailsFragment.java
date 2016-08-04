@@ -1,7 +1,7 @@
 package com.github.aint.lesson5.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,12 @@ public class PersonDetailsFragment extends Fragment {
     @BindView(R.id.locationTextView) TextView locationTextView;
     @BindView(R.id.occupationTextView) TextView occupationTextView;
 
-    public PersonDetailsFragment() {
+    public static PersonDetailsFragment newInstance(Person person) {
+        PersonDetailsFragment fragment = new PersonDetailsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(MainActivity.PERSON_ATTRIBUTE, person);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

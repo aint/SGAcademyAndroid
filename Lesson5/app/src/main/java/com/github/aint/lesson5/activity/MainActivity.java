@@ -1,14 +1,14 @@
 package com.github.aint.lesson5.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -16,7 +16,7 @@ import android.view.View;
 
 import com.github.aint.lesson5.R;
 import com.github.aint.lesson5.fragment.PersonDetailsFragment;
-import com.github.aint.lesson5.fragment.ViewPersonFragment;
+import com.github.aint.lesson5.fragment.PersonImageFragment;
 import com.github.aint.lesson5.model.Person;
 
 import java.io.PrintWriter;
@@ -45,31 +45,6 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter mPagerAdapter;
     private PersonDetailsFragment personDetailsFragment = new PersonDetailsFragment();
 
-    private class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
-
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Log.e(LOG_TAG, "pos " + position);
-            person = persons.get(position);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(PERSON_ATTRIBUTE, person);
-            Fragment viewPersonFragment = new ViewPersonFragment();
-            viewPersonFragment.setArguments(bundle);
-            return viewPersonFragment;
-        }
-
-        @Override
-        public int getCount() {
-            return persons.size();
-        }
-
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +58,12 @@ public class MainActivity extends FragmentActivity {
         setNoPersonTextView();
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new PersonImagePagerAdapter(getFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                Log.e(LOG_TAG, "page " + position);
+                person = persons.get(position);
                 invalidateOptionsMenu();
             }
         });
@@ -162,22 +137,18 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onImageClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PERSON_ATTRIBUTE, person);
-        personDetailsFragment.setArguments(bundle);
-
         mPager.setVisibility(View.GONE);
 
-        getSupportFragmentManager()
+        getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, personDetailsFragment)
+                .replace(R.id.container, PersonDetailsFragment.newInstance(person))
                 .commit();
     }
 
     public void onBackButtonClick(View view) {
         mPager.setVisibility(View.VISIBLE);
 
-        getSupportFragmentManager()
+        getFragmentManager()
                 .beginTransaction()
                 .remove(personDetailsFragment)
                 .commit();
@@ -189,6 +160,23 @@ public class MainActivity extends FragmentActivity {
             super.onBackPressed();
         } else {
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
+    }
+
+    private class PersonImagePagerAdapter extends FragmentPagerAdapter {
+
+        public PersonImagePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PersonImageFragment.newInstance(persons.get(position));
+        }
+
+        @Override
+        public int getCount() {
+            return persons.size();
         }
     }
 
