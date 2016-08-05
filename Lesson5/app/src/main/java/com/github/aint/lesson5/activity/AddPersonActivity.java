@@ -1,11 +1,12 @@
 package com.github.aint.lesson5.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,7 +19,7 @@ import butterknife.ButterKnife;
 
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
-public class AddPersonActivity extends Activity {
+public class AddPersonActivity extends AppCompatActivity {
 
     private String firstName;
     private String lastName;
@@ -40,7 +41,24 @@ public class AddPersonActivity extends Activity {
 //        addDefault4Persons();
     }
 
-    public void onSaveButtonClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_person_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (R.id.menu_save == itemId) {
+            onSaveMenuAction();
+        } else if (R.id.menu_cancel == itemId) {
+            finishAndStartMainActivity();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onSaveMenuAction() {
         if (!validateFullName()) {
             return;
         }
@@ -90,10 +108,6 @@ public class AddPersonActivity extends Activity {
     private void finishAndStartMainActivity() {
         finish();
         startActivity(new Intent(this, MainActivity.class));
-    }
-
-    public void onCancelButtonClick(View view) {
-        finishAndStartMainActivity();
     }
 
 }
