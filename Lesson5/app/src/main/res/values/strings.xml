@@ -17,4 +17,14 @@
     <string name="menu_add">Add Person</string>
     <string name="menu_exit">Exit</string>
     <string name="menu_setting">Settings</string>
+    <string name="pref_general">General</string>
+    <string name="pref_media">Media</string>
+    <string name="pref_large_text_title">Enable/disable large text</string>
+    <string name="pref_large_text_summary">Enable or disable large text</string>
+    <string name="pref_toggle_vibr_title">Enable/disable vibration</string>
+    <string name="pref_toggle_vibr_summary">Enable or disable vibration</string>
+    <string name="pref_toggle_sound_title">Enable/disable sound</string>
+    <string name="pref_toggle_sound_summary">Enable or disable sound</string>
+    <string name="pref_toggle_img_summary">Show or hide person\'s image</string>
+    <string name="pref_toggle_img_title">Show/Hide Images</string>
 </resources>

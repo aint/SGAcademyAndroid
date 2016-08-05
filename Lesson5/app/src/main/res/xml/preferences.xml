@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/pref_general">
+
+        <CheckBoxPreference
+            android:key="toggle_image"
+            android:summary="@string/pref_toggle_img_summary"
+            android:title="@string/pref_toggle_img_title"/>
+
+        <CheckBoxPreference
+            android:key="toggle_large_text"
+            android:summary="@string/pref_large_text_summary"
+            android:title="@string/pref_large_text_title"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_media">
+
+        <SwitchPreference
+            android:key="toggle_sound"
+            android:summary="@string/pref_toggle_sound_summary"
+            android:title="@string/pref_toggle_sound_title"/>
+
+        <SwitchPreference
+            android:key="toggle_vibration"
+            android:summary="@string/pref_toggle_vibr_summary"
+            android:title="@string/pref_toggle_vibr_title"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -3,31 +3,23 @@ package com.github.aint.lesson5.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.aint.lesson5.R;
+import com.github.aint.lesson5.asynctask.WritePersonsToPrefsTask;
 import com.github.aint.lesson5.model.Person;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.github.aint.lesson5.activity.MainActivity.PERSON_KEYS;
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
 public class AddPersonActivity extends Activity {
 
-    private SharedPreferences sharedPreferences;
     private String firstName;
     private String lastName;
 
@@ -42,66 +34,29 @@ public class AddPersonActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_and_view_layout);
+        setContentView(R.layout.add_person_layout);
         ButterKnife.bind(this);
 
-        sharedPreferences = getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE);
-
-        setVisibleAddComponents();
-        setInvisibleViewComponents();
-    }
-
-    private class WritePersonsToPrefsTask extends AsyncTask<Person, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Person... persons) {
-            appendToPrefs(convertPersons(persons));
-            return null;
-        }
-
-        private void appendToPrefs(Set<String> values) {
-            Set<String> personSet = sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>());
-            personSet.addAll(values);
-            sharedPreferences.edit()
-                    .putStringSet(PERSON_KEYS, personSet)
-                    .clear()
-                    .apply();
-        }
-
-        private Set<String> convertPersons(Person... persons) {
-            Set<String> personSet = new HashSet<>();
-            for (Person person : persons) {
-                personSet.add(personToString(person));
-            }
-            return personSet;
-        }
-
-        private String personToString(Person person) {
-            return TextUtils.join(":", Arrays.asList(
-                    person.getImageId(),
-                    person.getFirstName(),
-                    person.getLastName(),
-                    String.valueOf(person.getAge()),
-                    person.getSex(),
-                    String.valueOf(person.getSalary()),
-                    person.getLocation(),
-                    person.getOccupation()
-            ));
-        }
+//        addDefault4Persons();
     }
 
     public void onSaveButtonClick(View view) {
-//        Person messi = new Person(R.drawable.messi, "Lionel", "Messi", 29, "Male", 12345, "Barcelona", "Forward");
-//        Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real madrid", "Forward");
-//        Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
-//        Person neuer = new Person(R.drawable.neuer, "Manuel", "Neuer", 30, "Male", 45123, "Bayern", "Goalkeeper");
-//        new WritePersonsToPrefsTask().execute(messi, ronaldo, suarez, neuer);
         if (!validateFullName()) {
             return;
         }
-        new WritePersonsToPrefsTask().execute(constructNewPerson());
+        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE))
+                .execute(constructNewPerson());
 
         finishAndStartMainActivity();
+    }
+
+    private void addDefault4Persons() {
+        Person messi = new Person(R.drawable.messi, "Lionel", "Messi", 29, "Male", 12345, "Barcelona", "Forward");
+        Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real madrid", "Forward");
+        Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
+        Person neuer = new Person(R.drawable.neuer, "Manuel", "Neuer", 30, "Male", 45123, "Bayern", "Goalkeeper");
+        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE))
+                .execute(messi, ronaldo, suarez, neuer);
     }
 
     private Person constructNewPerson() {
@@ -130,18 +85,6 @@ public class AddPersonActivity extends Activity {
             return false;
         }
         return true;
-    }
-
-    private void setVisibleAddComponents() {
-        findViewById(R.id.editLayout).setVisibility(View.VISIBLE);
-        findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.saveButton).setVisibility(View.VISIBLE);
-    }
-
-    private void setInvisibleViewComponents() {
-        findViewById(R.id.viewLayout).setVisibility(View.GONE);
-        findViewById(R.id.backButton).setVisibility(View.GONE);
-        findViewById(R.id.exitButton).setVisibility(View.GONE);
     }
 
     private void finishAndStartMainActivity() {
