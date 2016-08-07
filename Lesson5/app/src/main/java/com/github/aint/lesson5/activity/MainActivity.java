@@ -83,11 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onExitButtonClick(View view) {
-        finish();
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.addCategory(Intent.CATEGORY_HOME);
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(homeIntent);
+        exitApp();
     }
 
     public void onImageClick(View view) {
@@ -138,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             mPager.setVisibility(View.GONE);
             replaceFragment(new SettingsFragment());
         } else if (R.id.menu_exit == itemId) {
-            finish();
+            exitApp();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,6 +151,13 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+    }
+
+    private void exitApp() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
     }
 
     private class PersonImagePagerAdapter extends FragmentStatePagerAdapter {
