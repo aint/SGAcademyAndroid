@@ -19,6 +19,8 @@ import com.github.aint.lesson5.model.Person;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static com.github.aint.lesson5.activity.MainActivity.DISPLAY_PERSON_ATTRIBUTE;
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
 public class AddPersonActivity extends AppCompatActivity {
@@ -75,20 +77,22 @@ public class AddPersonActivity extends AppCompatActivity {
     }
 
     private void showNotification() {
-        //TODO pass flag to show new added person
-        PendingIntent pendingIntent = PendingIntent
-                .getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID,
                 new NotificationCompat.Builder(this)
                         .setAutoCancel(true)
-                        .setContentIntent(pendingIntent)
+                        .setContentIntent(getPendingIntentToMainActivity())
                         .setContentTitle(firstName + " " + lastName)
                         .setContentText(NOTIFICATION_MESSAGE)
                         .setTicker(NOTIFICATION_TICKER)
                         .setSmallIcon(R.drawable.ic_stat_name)
                         .build()
         );
+    }
+
+    private PendingIntent getPendingIntentToMainActivity() {
+        return PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class).putExtra(DISPLAY_PERSON_ATTRIBUTE, true),
+                FLAG_UPDATE_CURRENT);
     }
 
     private void addDefault4Persons() {

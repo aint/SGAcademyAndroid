@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String PERSON_KEYS = "person_keys";
     public static final String PERSON_ATTRIBUTE = "person";
 
+    public static final String DISPLAY_PERSON_ATTRIBUTE = "display";
+
     private List<Person> persons;
     private Person person;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setNoPersonTextView();
 
         initPager();
+        setPagerCurrentItem();
     }
 
     private void initPager() {
@@ -62,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
             }
         });
+    }
+
+    private void setPagerCurrentItem() {
+        if (getIntent().getBooleanExtra(DISPLAY_PERSON_ATTRIBUTE, false)) {
+            mPager.setCurrentItem(persons.size());
+        }
     }
 
     private void getPersons() {
