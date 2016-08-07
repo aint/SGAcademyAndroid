@@ -1,9 +1,11 @@
 package com.github.aint.lesson5.activity;
 
-import android.content.Context;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,11 @@ import butterknife.ButterKnife;
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
 public class AddPersonActivity extends AppCompatActivity {
+
+    private static final int NOTIFICATION_ID = 101;
+    private static final String NOTIFICATION_TICKER = "Person Added";
+    private static final String NOTIFICATION_MESSAGE = "Tap to see details";
+    private static final String VALIDATION_TOAST = "Full name is required";
 
     private String firstName;
     private String lastName;
@@ -59,13 +66,29 @@ public class AddPersonActivity extends AppCompatActivity {
     }
 
     public void onSaveMenuAction() {
-        if (!validateFullName()) {
-            return;
+        if (validateFullName()) {
+            new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE))
+                    .execute(constructNewPerson());
+            showNotification();
+            clearAllFields();
         }
-        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE))
-                .execute(constructNewPerson());
+    }
 
-        finishAndStartMainActivity();
+    private void showNotification() {
+        //TODO pass flag to show new added person
+        PendingIntent pendingIntent = PendingIntent
+                .getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID,
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
+                        .setContentTitle(firstName + " " + lastName)
+                        .setContentText(NOTIFICATION_MESSAGE)
+                        .setTicker(NOTIFICATION_TICKER)
+                        .setSmallIcon(R.drawable.ic_stat_name)
+                        .build()
+        );
     }
 
     private void addDefault4Persons() {
@@ -73,7 +96,7 @@ public class AddPersonActivity extends AppCompatActivity {
         Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real madrid", "Forward");
         Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
         Person neuer = new Person(R.drawable.neuer, "Manuel", "Neuer", 30, "Male", 45123, "Bayern", "Goalkeeper");
-        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE))
+        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE))
                 .execute(messi, ronaldo, suarez, neuer);
     }
 
@@ -99,7 +122,7 @@ public class AddPersonActivity extends AppCompatActivity {
         firstName = firstNameEditText.getText().toString();
         lastName = lastNameEditText.getText().toString();
         if (firstName.isEmpty() || lastName.isEmpty()) {
-            Toast.makeText(this, "Full name is required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, VALIDATION_TOAST, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -108,6 +131,17 @@ public class AddPersonActivity extends AppCompatActivity {
     private void finishAndStartMainActivity() {
         finish();
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void clearAllFields() {
+        firstNameEditText.setText(null);
+        lastNameEditText.setText(null);
+        ageEditText.setText(null);
+        sexEditText.setText(null);
+        salaryEditText.setText(null);
+        locationEditText.setText(null);
+        occupationEditText.setText(null);
+        firstNameEditText.requestFocus();
     }
 
 }

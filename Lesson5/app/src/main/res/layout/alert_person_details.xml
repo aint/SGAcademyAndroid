@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/personImageView"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/default_profile_image"
+                android:contentDescription="@string/profile_image_desc" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewLayout"
+            android:visibility="visible"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center">
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/firstNameTextView"
+                android:text="@string/first_name_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/lastNameTextView"
+                android:text="@string/last_name_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/ageTextView"
+                android:text="@string/age_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/sexTextView"
+                android:text="@string/sex_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/locationTextView"
+                android:text="@string/location_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/salaryTextView"
+                android:text="@string/salary_textview"/>
+
+            <TextView
+                style="@style/textView"
+                android:id="@+id/occupationTextView"
+                android:text="@string/occupation_textview"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
