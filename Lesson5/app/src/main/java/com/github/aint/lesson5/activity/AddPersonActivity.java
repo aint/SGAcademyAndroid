@@ -97,11 +97,12 @@ public class AddPersonActivity extends AppCompatActivity {
 
     private void addDefault4Persons() {
         Person messi = new Person(R.drawable.messi, "Lionel", "Messi", 29, "Male", 12345, "Barcelona", "Forward");
-        Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real madrid", "Forward");
+        Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real Madrid", "Forward");
         Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
-        Person neuer = new Person(R.drawable.neuer, "Manuel", "Neuer", 30, "Male", 45123, "Bayern", "Goalkeeper");
+        Person neuer = new Person(R.drawable.ibra, "Zlatan", "Ibrahimovich", 33, "Male", 45123, "Man Unt", "Forward");
+        Person bale = new Person(R.drawable.bale, "Garet", "Bale", 26, "Male", 51234, "Real Madrid", "Midfielder");
         new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE))
-                .execute(messi, ronaldo, suarez, neuer);
+                .execute(messi, ronaldo, suarez, neuer, bale);
     }
 
     private Person constructNewPerson() {
