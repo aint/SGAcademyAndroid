@@ -91,12 +91,7 @@ public class MainActivity extends AppCompatActivity {
             showPreviousFragment();
             return;
         }
-
-//        if (mPager.getCurrentItem() == 0) {
-//            super.onBackPressed();
-//        } else {
-//            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-//        }
+        super.onBackPressed();
     }
 
     private boolean checkSettingFragment() {
