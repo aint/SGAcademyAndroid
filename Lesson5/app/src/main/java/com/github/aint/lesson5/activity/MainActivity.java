@@ -1,12 +1,8 @@
 package com.github.aint.lesson5.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +13,7 @@ import android.widget.LinearLayout;
 import com.github.aint.lesson5.R;
 import com.github.aint.lesson5.asynctask.ReadPersonsFromPrefsTask;
 import com.github.aint.lesson5.fragment.PersonDetailsFragment;
-import com.github.aint.lesson5.fragment.PersonImageFragment;
+import com.github.aint.lesson5.fragment.ViewPagerFragment;
 import com.github.aint.lesson5.model.Person;
 import com.github.aint.lesson5.preference.SettingsFragment;
 
@@ -37,51 +33,34 @@ public class MainActivity extends AppCompatActivity {
     public static final String DISPLAY_PERSON_ATTRIBUTE = "display";
 
     private List<Person> persons;
-    private Person person;
 
-    private ViewPager mPager;
-
-    private PersonDetailsFragment personDetailsFragment = new PersonDetailsFragment();
+    private Fragment currentFragment;
+    private ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getPersons();
+        getAllPersons();
         setNoPersonTextView();
 
-        initPager();
-        setPagerCurrentItem();
+        replaceFragment(viewPagerFragment);
     }
 
-    private void initPager() {
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(new PersonImagePagerAdapter(getFragmentManager()));
-        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                person = persons.get(position);
-                invalidateOptionsMenu();
-            }
-        });
-    }
-
-    private void setPagerCurrentItem() {
-        if (getIntent().getBooleanExtra(DISPLAY_PERSON_ATTRIBUTE, false)) {
-            mPager.setCurrentItem(persons.size());
-        }
-    }
-
-    private void getPersons() {
+    private void getAllPersons() {
         try {
             persons = new ReadPersonsFromPrefsTask(
-                    getSharedPreferences(PERSON_PREFS_NAME, Context.MODE_PRIVATE)).execute().get();
+                    getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE)).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             Log.e(LOG_TAG, sw.toString());
         }
+    }
+
+    public List<Person> getPersons() {
+        return persons;
     }
 
     private void setNoPersonTextView() {
@@ -96,36 +75,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onImageClick(View view) {
-        mPager.setVisibility(View.GONE);
-        replaceFragment(PersonDetailsFragment.newInstance(person));
+        hideCurrentFragment();
+        addFragment(PersonDetailsFragment.newInstance(viewPagerFragment.getCurrentPerson()));
     }
 
     public void onBackButtonClick(View view) {
-        mPager.setVisibility(View.VISIBLE);
-        removeFragment(personDetailsFragment);
+        removeCurrentFragment();
+        showPreviousFragment();
     }
 
     @Override
     public void onBackPressed() {
         if (checkSettingFragment()) {
+            removeCurrentFragment();
+            showPreviousFragment();
             return;
         }
 
-        if (mPager.getCurrentItem() == 0) {
-            super.onBackPressed();
-        } else {
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
+//        if (mPager.getCurrentItem() == 0) {
+//            super.onBackPressed();
+//        } else {
+//            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+//        }
     }
 
     private boolean checkSettingFragment() {
         Fragment currentFragment = getFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof SettingsFragment) {
-            mPager.setVisibility(View.VISIBLE);
-            removeFragment(currentFragment);
-            return true;
-        }
-        return false;
+        return currentFragment instanceof SettingsFragment;
     }
 
     @Override
@@ -140,18 +116,40 @@ public class MainActivity extends AppCompatActivity {
         if (R.id.menu_add == itemId) {
             startActivity(new Intent(this, AddPersonActivity.class));
         } else if (R.id.menu_setting == itemId) {
-            mPager.setVisibility(View.GONE);
-            replaceFragment(new SettingsFragment());
+            hideCurrentFragment();
+            addFragment(new SettingsFragment());
         } else if (R.id.menu_exit == itemId) {
             exitApp();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void removeFragment(Fragment fragment) {
+    private void hideCurrentFragment() {
+        currentFragment = getFragmentManager().findFragmentById(R.id.container);
         getFragmentManager()
                 .beginTransaction()
-                .remove(fragment)
+                .hide(currentFragment)
+                .commit();
+    }
+
+    private void showPreviousFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .show(currentFragment)
+                .commit();
+    }
+
+    private void removeCurrentFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .remove(getFragmentManager().findFragmentById(R.id.container))
+                .commit();
+    }
+
+    private void addFragment(Fragment fragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, fragment)
                 .commit();
     }
 
@@ -163,27 +161,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exitApp() {
+        finish();
         Intent homeIntent = new Intent(Intent.ACTION_MAIN);
         homeIntent.addCategory(Intent.CATEGORY_HOME);
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeIntent);
-    }
-
-    private class PersonImagePagerAdapter extends FragmentStatePagerAdapter {
-
-        public PersonImagePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return PersonImageFragment.newInstance(persons.get(position));
-        }
-
-        @Override
-        public int getCount() {
-            return persons.size();
-        }
     }
 
 }

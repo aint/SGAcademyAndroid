@@ -25,15 +25,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/container"
-        android:orientation="horizontal">
-
-        <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pager"/>
-
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
 </LinearLayout>
 
