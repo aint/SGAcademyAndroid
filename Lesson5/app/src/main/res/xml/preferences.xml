@@ -6,6 +6,7 @@
 
         <CheckBoxPreference
             android:key="toggle_image"
+            android:defaultValue="true"
             android:summary="@string/pref_toggle_img_summary"
             android:title="@string/pref_toggle_img_title"/>
 

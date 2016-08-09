@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPreviousFragment() {
+//        currentFragment.not
         getFragmentManager()
                 .beginTransaction()
                 .show(currentFragment)

@@ -6,15 +6,34 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:onClick="onImageClick">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstNameTextView"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:textSize="50sp"
+            android:text=""/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lastNameTextView"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:textSize="50sp"
+            android:text=""/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/personImage"
             android:src="@drawable/default_profile_image"
-            android:contentDescription="@string/profile_image_desc"
-            android:onClick="onImageClick"/>
+            android:contentDescription="@string/profile_image_desc"/>
     </LinearLayout>
 
 </ScrollView>
