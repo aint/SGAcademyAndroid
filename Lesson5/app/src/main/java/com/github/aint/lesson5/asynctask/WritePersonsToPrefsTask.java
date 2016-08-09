@@ -2,12 +2,12 @@ package com.github.aint.lesson5.asynctask;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import com.github.aint.lesson5.model.Person;
+import com.google.gson.Gson;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_KEYS;
@@ -36,7 +36,7 @@ public class WritePersonsToPrefsTask extends AsyncTask<Person, Void, Void> {
     }
 
     private Set<String> convertPersons(Person... persons) {
-        Set<String> personSet = new HashSet<>();
+        Set<String> personSet = new LinkedHashSet<>();
         for (Person person : persons) {
             personSet.add(personToString(person));
         }
@@ -44,15 +44,6 @@ public class WritePersonsToPrefsTask extends AsyncTask<Person, Void, Void> {
     }
 
     private String personToString(Person person) {
-        return TextUtils.join(":", Arrays.asList(
-                person.getImageId(),
-                person.getFirstName(),
-                person.getLastName(),
-                String.valueOf(person.getAge()),
-                person.getSex(),
-                String.valueOf(person.getSalary()),
-                person.getLocation(),
-                person.getOccupation()
-        ));
+        return new Gson().toJson(person);
     }
 }

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.github.aint.lesson5.model.Person;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,17 +38,7 @@ public class ReadPersonsFromPrefsTask extends AsyncTask<Void, Void, List<Person>
     }
 
     private Person stringToPerson(String str) {
-        String[] fields = str.split(":");
-        return new Person(
-                Integer.valueOf(fields[0]),
-                fields[1],
-                fields[2],
-                Integer.valueOf(fields[3]),
-                fields[4],
-                Double.valueOf(fields[5]),
-                fields[6],
-                fields[7]
-        );
+        return new Gson().fromJson(str, Person.class);
     }
 
 }

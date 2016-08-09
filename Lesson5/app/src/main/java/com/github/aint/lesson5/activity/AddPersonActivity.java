@@ -1,7 +1,9 @@
 package com.github.aint.lesson5.activity;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +11,9 @@ import android.support.v7.app.NotificationCompat;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.aint.lesson5.R;
@@ -23,12 +27,15 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.github.aint.lesson5.activity.MainActivity.DISPLAY_PERSON_ATTRIBUTE;
 import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
-public class AddPersonActivity extends AppCompatActivity {
+public class AddPersonActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
 
     private static final int NOTIFICATION_ID = 101;
     private static final String NOTIFICATION_TICKER = "Person Added";
     private static final String NOTIFICATION_MESSAGE = "Tap to see details";
     private static final String VALIDATION_TOAST = "Full name is required";
+
+    private static final String BUTTON_OK = "OK";
+    private static final String BUTTON_CANCEL = "Cancel";
 
     private String firstName;
     private String lastName;
@@ -47,7 +54,7 @@ public class AddPersonActivity extends AppCompatActivity {
         setContentView(R.layout.add_person_layout);
         ButterKnife.bind(this);
 
-//        addDefault4Persons();
+//        addDefaultPersons();
     }
 
     @Override
@@ -69,10 +76,7 @@ public class AddPersonActivity extends AppCompatActivity {
 
     public void onSaveMenuAction() {
         if (validateFullName()) {
-            new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE))
-                    .execute(constructNewPerson());
-            showNotification();
-            clearAllFields();
+            showAlert();
         }
     }
 
@@ -95,7 +99,42 @@ public class AddPersonActivity extends AppCompatActivity {
                 FLAG_UPDATE_CURRENT);
     }
 
-    private void addDefault4Persons() {
+    private void showAlert() {
+        new AlertDialog.Builder(this)
+                .setView(setAlertView())
+                .setIcon(R.drawable.ic_stat_name)
+                .setCancelable(false)
+                .setPositiveButton(BUTTON_OK, this)
+                .setNegativeButton(BUTTON_CANCEL, this)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == -1) {
+            new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE)).execute(constructNewPerson());
+            showNotification();
+            clearAllFields();
+        } else if (which == -2) {
+            dialog.dismiss();
+        }
+    }
+
+    private View setAlertView() {
+        View alertView = getLayoutInflater().inflate(R.layout.alert_person_details, null);
+        ((TextView) alertView.findViewById(R.id.firstNameTextView)).setText(firstName);
+        ((TextView) alertView.findViewById(R.id.lastNameTextView)).setText(lastName);
+        ((TextView) alertView.findViewById(R.id.ageTextView)).setText(ageEditText.getText());
+        ((TextView) alertView.findViewById(R.id.sexTextView)).setText(sexEditText.getText());
+        ((TextView) alertView.findViewById(R.id.locationTextView)).setText(locationEditText.getText());
+        ((TextView) alertView.findViewById(R.id.salaryTextView)).setText(salaryEditText.getText());
+        ((TextView) alertView.findViewById(R.id.occupationTextView)).setText(occupationEditText.getText());
+        return alertView;
+    }
+
+
+    private void addDefaultPersons() {
         Person messi = new Person(R.drawable.messi, "Lionel", "Messi", 29, "Male", 12345, "Barcelona", "Forward");
         Person ronaldo = new Person(R.drawable.ronaldo, "Cristiano", "Ronaldo", 31, "Male", 23451, "Real Madrid", "Forward");
         Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
