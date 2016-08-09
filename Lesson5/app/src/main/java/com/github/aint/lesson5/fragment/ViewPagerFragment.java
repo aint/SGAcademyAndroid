@@ -53,8 +53,12 @@ public class ViewPagerFragment extends Fragment {
     }
 
     private void setPagerCurrentItem() {
-        if (getActivity().getIntent().getBooleanExtra(DISPLAY_PERSON_ATTRIBUTE, false)) {
-            mPager.setCurrentItem(persons.size());
+        String personName = getActivity().getIntent().getStringExtra(DISPLAY_PERSON_ATTRIBUTE);
+        for (int i = 0; i < persons.size(); i++) {
+            if ((persons.get(i).getFirstName() + persons.get(i).getLastName()).equals(personName)) {
+                mPager.setCurrentItem(i);
+                return;
+            }
         }
     }
 

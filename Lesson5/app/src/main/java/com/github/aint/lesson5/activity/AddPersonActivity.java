@@ -95,7 +95,7 @@ public class AddPersonActivity extends AppCompatActivity implements DialogInterf
 
     private PendingIntent getPendingIntentToMainActivity() {
         return PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class).putExtra(DISPLAY_PERSON_ATTRIBUTE, true),
+                new Intent(this, MainActivity.class).putExtra(DISPLAY_PERSON_ATTRIBUTE, firstName + lastName),
                 FLAG_UPDATE_CURRENT);
     }
 
