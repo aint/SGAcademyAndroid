@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getAllPersons() {
         try {
-            persons = new ReadPersonsFromPrefsTask(
-                    getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE)).execute().get();
+            persons = new ReadPersonsFromPrefsTask(this).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));

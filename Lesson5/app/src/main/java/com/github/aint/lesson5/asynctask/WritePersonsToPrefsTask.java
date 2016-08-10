@@ -1,49 +1,44 @@
 package com.github.aint.lesson5.asynctask;
 
-import android.content.SharedPreferences;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+import com.github.aint.lesson5.PersonDbHelper;
+import com.github.aint.lesson5.PersonEntity;
 import com.github.aint.lesson5.model.Person;
-import com.google.gson.Gson;
-
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import static com.github.aint.lesson5.activity.MainActivity.PERSON_KEYS;
 
 public class WritePersonsToPrefsTask extends AsyncTask<Person, Void, Void> {
 
-    private final SharedPreferences sharedPreferences;
+    private SQLiteDatabase sqLiteDb;
 
-    public WritePersonsToPrefsTask(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
+    public WritePersonsToPrefsTask(Context context) {
+        this.sqLiteDb = new PersonDbHelper(context).getWritableDatabase();
     }
 
     @Override
     protected Void doInBackground(Person... persons) {
-        appendToPrefs(convertPersons(persons));
+        insertToDb(persons);
         return null;
     }
 
-    private void appendToPrefs(Set<String> values) {
-        Set<String> personSet = sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>());
-        personSet.addAll(values);
-        sharedPreferences.edit()
-                .putStringSet(PERSON_KEYS, personSet)
-                .clear()
-                .apply();
-    }
-
-    private Set<String> convertPersons(Person... persons) {
-        Set<String> personSet = new LinkedHashSet<>();
+    private void insertToDb(Person... persons) {
         for (Person person : persons) {
-            personSet.add(personToString(person));
+            sqLiteDb.insert(PersonEntity.TABLE_NAME, null, constructContentValues(person));
         }
-        return personSet;
     }
 
-    private String personToString(Person person) {
-        return new Gson().toJson(person);
+    private ContentValues constructContentValues(Person person) {
+        ContentValues values = new ContentValues();
+        values.put(PersonEntity.COLUMN_NAME_IMAGE_ID, person.getImageId());
+        values.put(PersonEntity.COLUMN_NAME_FIRST_NAME, person.getFirstName());
+        values.put(PersonEntity.COLUMN_NAME_LAST_NAME, person.getLastName());
+        values.put(PersonEntity.COLUMN_NAME_AGE, person.getAge());
+        values.put(PersonEntity.COLUMN_NAME_SEX, person.getSex());
+        values.put(PersonEntity.COLUMN_NAME_SALARY, person.getSalary());
+        values.put(PersonEntity.COLUMN_NAME_LOCATION, person.getLocation());
+        values.put(PersonEntity.COLUMN_NAME_OCCUPATION, person.getOccupation());
+        return values;
     }
 }

@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.github.aint.lesson5.activity.MainActivity.DISPLAY_PERSON_ATTRIBUTE;
-import static com.github.aint.lesson5.activity.MainActivity.PERSON_PREFS_NAME;
 
 public class AddPersonActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
 
@@ -113,7 +112,7 @@ public class AddPersonActivity extends AppCompatActivity implements DialogInterf
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == -1) {
-            new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE)).execute(constructNewPerson());
+            new WritePersonsToPrefsTask(this).execute(constructNewPerson());
             showNotification();
             clearAllFields();
         } else if (which == -2) {
@@ -140,8 +139,7 @@ public class AddPersonActivity extends AppCompatActivity implements DialogInterf
         Person suarez = new Person(R.drawable.suarez, "Luis", "Suarez", 29, "Male", 34512, "Barcelona", "Forward");
         Person neuer = new Person(R.drawable.ibra, "Zlatan", "Ibrahimovich", 33, "Male", 45123, "Man Unt", "Forward");
         Person bale = new Person(R.drawable.bale, "Garet", "Bale", 26, "Male", 51234, "Real Madrid", "Midfielder");
-        new WritePersonsToPrefsTask(getSharedPreferences(PERSON_PREFS_NAME, MODE_PRIVATE))
-                .execute(messi, ronaldo, suarez, neuer, bale);
+        new WritePersonsToPrefsTask(this).execute(messi, ronaldo, suarez, neuer, bale);
     }
 
     private Person constructNewPerson() {

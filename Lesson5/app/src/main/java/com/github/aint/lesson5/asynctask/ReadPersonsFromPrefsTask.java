@@ -1,23 +1,23 @@
 package com.github.aint.lesson5.asynctask;
 
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+import com.github.aint.lesson5.PersonDbHelper;
+import com.github.aint.lesson5.PersonEntity;
 import com.github.aint.lesson5.model.Person;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-
-import static com.github.aint.lesson5.activity.MainActivity.PERSON_KEYS;
 
 public class ReadPersonsFromPrefsTask extends AsyncTask<Void, Void, List<Person>> {
 
-    private final SharedPreferences sharedPreferences;
+    private SQLiteDatabase sqLiteDb;
 
-    public ReadPersonsFromPrefsTask(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
+    public ReadPersonsFromPrefsTask(Context context) {
+        this.sqLiteDb = new PersonDbHelper(context).getReadableDatabase();
     }
 
     @Override
@@ -26,19 +26,29 @@ public class ReadPersonsFromPrefsTask extends AsyncTask<Void, Void, List<Person>
     }
 
     private List<Person> getPersonsFromPrefs() {
-        return stringSetToPersonList();
-    }
-
-    private List<Person> stringSetToPersonList() {
         List<Person> personList = new ArrayList<>();
-        for (String value : sharedPreferences.getStringSet(PERSON_KEYS, new HashSet<String>())) {
-            personList.add(stringToPerson(value));
+        Cursor cursor = selectAllCursor();
+        while (cursor.moveToNext()) {
+            personList.add(constructPerson(cursor));
         }
         return personList;
     }
 
-    private Person stringToPerson(String str) {
-        return new Gson().fromJson(str, Person.class);
+    private Person constructPerson(Cursor cursor) {
+        return new Person(
+                cursor.getInt(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_IMAGE_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_FIRST_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_LAST_NAME)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_AGE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_SEX)),
+                cursor.getDouble(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_SALARY)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_LOCATION)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PersonEntity.COLUMN_NAME_OCCUPATION))
+        );
+    }
+
+    private Cursor selectAllCursor() {
+        return sqLiteDb.query(PersonEntity.TABLE_NAME, null, null, null, null, null, null);
     }
 
 }
