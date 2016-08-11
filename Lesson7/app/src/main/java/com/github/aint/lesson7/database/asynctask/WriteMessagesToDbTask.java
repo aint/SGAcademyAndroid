@@ -1,20 +1,19 @@
-package com.github.aint.lesson7.asynctask;
+package com.github.aint.lesson7.database.asynctask;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-import com.github.aint.lesson5.PersonDbHelper;
-import com.github.aint.lesson5.PersonEntity;
-import com.github.aint.lesson5.model.Person;
+import com.github.aint.lesson7.database.entry.MessageEntry;
+import com.github.aint.lesson7.database.helper.MessageDbHelper;
 import com.github.aint.lesson7.model.Message;
 
-public class WritePersonsToPrefsTask extends AsyncTask<Message, Void, Void> {
+public class WriteMessagesToDbTask extends AsyncTask<Message, Void, Void> {
 
     private SQLiteDatabase sqLiteDb;
 
-    public WritePersonsToPrefsTask(Context context) {
+    public WriteMessagesToDbTask(Context context) {
         this.sqLiteDb = new MessageDbHelper(context).getWritableDatabase();
     }
 
@@ -26,15 +25,15 @@ public class WritePersonsToPrefsTask extends AsyncTask<Message, Void, Void> {
 
     private void insertToDb(Message... messages) {
         for (Message message : messages) {
-            sqLiteDb.insert(MessageEntity.TABLE_NAME, null, constructContentValues(message));
+            sqLiteDb.insert(MessageEntry.TABLE_NAME, null, constructContentValues(message));
         }
     }
 
     private ContentValues constructContentValues(Message message) {
         ContentValues values = new ContentValues();
-        values.put(MessageEntity.COLUMN_NAME_IMAGE_ID, message.getImageId());
-        values.put(MessageEntity.COLUMN_NAME_FIRST_NAME, message.getTitle());
-        values.put(MessageEntity.COLUMN_NAME_LAST_NAME, message.getBody());
+        values.put(MessageEntry.COLUMN_NAME_IMAGE_ID, message.getImageId());
+        values.put(MessageEntry.COLUMN_NAME_FIRST_NAME, message.getTitle());
+        values.put(MessageEntry.COLUMN_NAME_LAST_NAME, message.getBody());
         return values;
     }
 }
