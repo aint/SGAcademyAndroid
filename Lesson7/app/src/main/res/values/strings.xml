@@ -11,7 +11,7 @@
     <string name="location_textview">Location</string>
     <string name="salary_textview">Salary</string>
     <string name="occupation_textview">Occupation</string>
-    <string name="no_person_textview">No person yet</string>
+    <string name="no_message_textview">No messages yet</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
 </resources>
