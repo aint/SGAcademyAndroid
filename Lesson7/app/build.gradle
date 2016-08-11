@@ -7,7 +7,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.github.aint.lesson2"
+        applicationId "com.github.aint.lesson7"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1

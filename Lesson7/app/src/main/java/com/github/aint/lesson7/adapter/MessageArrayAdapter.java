@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.github.aint.lesson7.R;
 import com.github.aint.lesson7.model.Message;
@@ -34,14 +35,14 @@ public class MessageArrayAdapter extends ArrayAdapter<Message> {
             this.position = position;
             this.convertView = convertView;
 
-            setFullName();
+            setUpMessage();
         }
         return convertView;
     }
 
-    private void setFullName() {
-//        ((TextView) convertView.findViewById(R.id.label1)).setText(persons.get(position).getFirstName());
-//        ((TextView) convertView.findViewById(R.id.label2)).setText(persons.get(position).getLastName());
+    private void setUpMessage() {
+        ((TextView) convertView.findViewById(R.id.title)).setText(messages.get(position).getTitle());
+        ((TextView) convertView.findViewById(R.id.body)).setText(messages.get(position).getBody());
     }
 
 }

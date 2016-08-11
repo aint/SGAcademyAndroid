@@ -51,7 +51,7 @@ public class ViewActivity extends Activity {
     }
 
     private Message getMessage() {
-        return (Message) getIntent().getSerializableExtra(MainActivity.PERSON_ATTRIBUTE);
+        return (Message) getIntent().getSerializableExtra(MainActivity.MESSAGE_ATTRIBUTE);
     }
 
     private void setTextViews() {
