@@ -11,10 +11,10 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.github.aint.lesson7.R;
+import com.github.aint.lesson7.adapter.MessageArrayAdapter;
 import com.github.aint.lesson7.model.Message;
 import com.github.aint.lesson7.service.MessageService;
 
@@ -31,24 +31,27 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private static final String LOG_TAG = MainActivity.class.getName();
 
     public static final String MESSAGE_ATTRIBUTE = "message";
+    public static final String MESSAGES_ATTRIBUTE = "messages";
+    public static final String NEW_MESSAGE_ACTION = "new_message";
 
-    private List<String> messages;
+    private List<Message> messages;
     @BindView(R.id.listView) ListView listView;
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            if ("new message".equals(intent.getAction())) {
+            if (NEW_MESSAGE_ACTION.equals(intent.getAction())) {
+                Message newMessage = (Message) intent.getSerializableExtra(MESSAGES_ATTRIBUTE);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                        new Intent(context, MainActivity.class)
-                                .putStringArrayListExtra("messages", intent.getStringArrayListExtra("messages")),
-                        FLAG_UPDATE_CURRENT);
+                        new Intent(context, MainActivity.class).putExtra(MESSAGES_ATTRIBUTE, newMessage), FLAG_UPDATE_CURRENT);
 
                 ((NotificationManager) getSystemService(NOTIFICATION_SERVICE))
                         .notify(101, new NotificationCompat.Builder(context)
                                 .setAutoCancel(true)
                                 .setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Title")
-                                .setContentText("Text")
+                                .setContentTitle(newMessage.getTitle())
+                                .setContentText(newMessage.getBody())
                                 .setContentIntent(pendingIntent)
                                 .build()
                         );
@@ -65,34 +68,29 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         listView.setOnItemClickListener(this);
 
+        regReceiverAndStartService();
+
         messages = createMsg();
-        try {
-            listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                    getIntent().getStringArrayListExtra("messages")));
-        } catch (Exception e) {
-            regReceiverAndStartService();
-            listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages));
+        Message newMsg = (Message) getIntent().getSerializableExtra(MESSAGES_ATTRIBUTE);
+        if (newMsg != null) {
+            messages.add(newMsg);
         }
+        listView.setAdapter(new MessageArrayAdapter(this, messages));
 
         setNoPersonTextView();
 
     }
 
     private void regReceiverAndStartService() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("new message");
+        registerReceiver(broadcastReceiver, new IntentFilter(NEW_MESSAGE_ACTION));
 
-        registerReceiver(broadcastReceiver, intentFilter);
-
-        Intent intent = new Intent(this, MessageService.class);
-        intent.putStringArrayListExtra("messages", (ArrayList<String>) messages);
-        startService(intent);
+        startService(new Intent(this, MessageService.class));
     }
 
-    private List<String> createMsg() {
+    private List<Message> createMsg() {
         messages = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            messages.add("old msg");
+            messages.add(new Message(0, "Old title " + i, "Old body " + i));
         }
         return messages;
     }
