@@ -11,6 +11,7 @@ import com.github.aint.lesson7.model.Message;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.aint.lesson7.activity.MainActivity.MESSAGES_ATTRIBUTE;
+import static com.github.aint.lesson7.activity.MainActivity.MESSAGE_SIZE;
 import static com.github.aint.lesson7.activity.MainActivity.NEW_MESSAGE_ACTION;
 
 public class MessageService extends IntentService {
@@ -29,7 +30,8 @@ public class MessageService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        for (int i = 5; i < 100; i++) {
+        int size = intent.getIntExtra(MESSAGE_SIZE, 0) + 1;
+        for (int i = size; i < size + 100; i++) {
             try {
                 TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {

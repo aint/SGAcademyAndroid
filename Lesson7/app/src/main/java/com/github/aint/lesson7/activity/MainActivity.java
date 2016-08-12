@@ -1,8 +1,8 @@
 package com.github.aint.lesson7.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,13 +25,14 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     public static final String MESSAGE_ATTRIBUTE = "message";
     public static final String MESSAGES_ATTRIBUTE = "messages";
     public static final String NEW_MESSAGE_ACTION = "new_message";
+    public static final String MESSAGE_SIZE = "SIZE";
 
     @BindView(R.id.listView) ListView listView;
 
@@ -43,7 +44,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         checkNewMessage();
         setNoMessageTextView();
-        startMessageService();
+        startMessageService(); //TODO store new messages in broadcast receiver
         initListView();
     }
 
@@ -53,7 +54,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     private void startMessageService() {
-        startService(new Intent(this, MessageService.class));
+        startService(new Intent(this, MessageService.class).putExtra(MESSAGE_SIZE, getAllMessages().size()));
     }
 
     private void checkNewMessage() {
