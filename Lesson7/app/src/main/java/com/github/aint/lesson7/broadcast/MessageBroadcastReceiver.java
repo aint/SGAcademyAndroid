@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.github.aint.lesson7.R;
+import com.github.aint.lesson7.activity.App;
 import com.github.aint.lesson7.activity.MainActivity;
+import com.github.aint.lesson7.database.asynctask.WriteMessagesToDbTask;
 import com.github.aint.lesson7.model.Message;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -27,9 +29,15 @@ public class MessageBroadcastReceiver extends BroadcastReceiver {
 
         message = (Message) intent.getSerializableExtra(MESSAGES_ATTRIBUTE);
 
-        if (NEW_MESSAGE_ACTION.equals(intent.getAction())) {
+        if (message != null && NEW_MESSAGE_ACTION.equals(intent.getAction())) {
+            saveNewMessage();
             showNotification();
         }
+    }
+
+    private void saveNewMessage() {
+        new WriteMessagesToDbTask(context).execute(message);
+        App.addMessage(message);
     }
 
     private void showNotification() {

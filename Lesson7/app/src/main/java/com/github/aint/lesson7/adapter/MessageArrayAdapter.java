@@ -31,12 +31,12 @@ public class MessageArrayAdapter extends ArrayAdapter<Message> {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_view_adapter_layout, parent, false);
-
-            this.position = position;
-            this.convertView = convertView;
-
-            setUpMessage();
         }
+        this.position = position;
+        this.convertView = convertView;
+
+        setUpMessage();
+        
         return convertView;
     }
 

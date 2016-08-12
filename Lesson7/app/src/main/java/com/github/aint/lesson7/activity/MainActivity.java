@@ -3,7 +3,6 @@ package com.github.aint.lesson7.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,30 +10,22 @@ import android.widget.TextView;
 
 import com.github.aint.lesson7.R;
 import com.github.aint.lesson7.adapter.MessageArrayAdapter;
-import com.github.aint.lesson7.database.asynctask.ReadMessagesFromDbTask;
-import com.github.aint.lesson7.database.asynctask.WriteMessagesToDbTask;
 import com.github.aint.lesson7.model.Message;
 import com.github.aint.lesson7.service.MessageService;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private static final String LOG_TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getName();
 
     public static final String MESSAGE_ATTRIBUTE = "message";
     public static final String MESSAGES_ATTRIBUTE = "messages";
     public static final String NEW_MESSAGE_ACTION = "new_message";
-    public static final String MESSAGE_SIZE = "SIZE";
 
     @BindView(R.id.listView) ListView listView;
+    @BindView(R.id.empty) TextView emptyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,43 +33,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        checkNewMessage();
-        setNoMessageTextView();
-        startMessageService(); //TODO store new messages in broadcast receiver
+        startMessageService();
         initListView();
+        setNoMessageTextView();
     }
 
     private void initListView() {
-        listView.setAdapter(new MessageArrayAdapter(this, getAllMessages()));
+        listView.setAdapter(new MessageArrayAdapter(this, App.getAllMessages()));
         listView.setOnItemClickListener(this);
     }
 
     private void startMessageService() {
-        startService(new Intent(this, MessageService.class).putExtra(MESSAGE_SIZE, getAllMessages().size()));
-    }
-
-    private void checkNewMessage() {
-        Message msg = (Message) getIntent().getSerializableExtra(MESSAGES_ATTRIBUTE);
-        if (msg != null) {
-            new WriteMessagesToDbTask(this).execute(msg);
-        }
-    }
-
-    private List<Message> getAllMessages() {
-        try {
-            return new ReadMessagesFromDbTask(this).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            Log.e(LOG_TAG, sw.toString());
-        }
-        return new ArrayList<>();
+        startService(new Intent(this, MessageService.class));
     }
 
     private void setNoMessageTextView() {
-        TextView noMessage = (TextView) findViewById(R.id.empty);
-        noMessage.setText(getResources().getText(R.string.no_message_textview));
-        listView.setEmptyView(noMessage);
+        emptyTextView.setText(getResources().getText(R.string.no_message_textview));
+        listView.setEmptyView(emptyTextView);
     }
 
     public void onExitButtonClick(View view) {
