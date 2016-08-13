@@ -24,18 +24,14 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getName();
 
-    public static final String PERSON_PREFS_NAME = "person_prefs";
-    public static final String PERSON_KEYS = "person_keys";
     public static final String PERSON_ATTRIBUTE = "person";
-
     public static final String DISPLAY_PERSON_ATTRIBUTE = "display";
 
-    private List<Person> persons;
-
-    private Fragment currentFragment;
     private ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+
+    private List<Person> persons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException | ExecutionException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            Log.e(LOG_TAG, sw.toString());
+            Log.e(TAG, sw.toString());
         }
     }
 
@@ -74,23 +70,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onImageClick(View view) {
-        hideCurrentFragment();
-        addFragment(PersonDetailsFragment.newInstance(viewPagerFragment.getCurrentPerson()));
+        replaceFragment(PersonDetailsFragment.newInstance(viewPagerFragment.getCurrentPerson()));
     }
 
     public void onBackButtonClick(View view) {
-        removeCurrentFragment();
-        showPreviousFragment();
+        replaceFragment(viewPagerFragment);
     }
 
     @Override
     public void onBackPressed() {
         if (checkSettingFragment()) {
-            removeCurrentFragment();
-            showPreviousFragment();
-            return;
+            replaceFragment(viewPagerFragment);
         }
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 
     private boolean checkSettingFragment() {
@@ -110,41 +102,11 @@ public class MainActivity extends AppCompatActivity {
         if (R.id.menu_add == itemId) {
             startActivity(new Intent(this, AddPersonActivity.class));
         } else if (R.id.menu_setting == itemId) {
-            hideCurrentFragment();
-            addFragment(new SettingsFragment());
+            replaceFragment(new SettingsFragment());
         } else if (R.id.menu_exit == itemId) {
             exitApp();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void hideCurrentFragment() {
-        currentFragment = getFragmentManager().findFragmentById(R.id.container);
-        getFragmentManager()
-                .beginTransaction()
-                .hide(currentFragment)
-                .commit();
-    }
-
-    private void showPreviousFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .show(currentFragment)
-                .commit();
-    }
-
-    private void removeCurrentFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .remove(getFragmentManager().findFragmentById(R.id.container))
-                .commit();
-    }
-
-    private void addFragment(Fragment fragment) {
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.container, fragment)
-                .commit();
     }
 
     private void replaceFragment(Fragment fragment) {
