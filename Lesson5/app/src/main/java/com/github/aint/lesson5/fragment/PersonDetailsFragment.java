@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.aint.lesson5.R;
-import com.github.aint.lesson5.activity.MainActivity;
 import com.github.aint.lesson5.model.Person;
 
 import butterknife.BindView;
@@ -28,28 +27,17 @@ public class PersonDetailsFragment extends Fragment {
     @BindView(R.id.occupationTextView) TextView occupationTextView;
     @BindView(R.id.personImageView) ImageView personImage;
 
-    public static PersonDetailsFragment newInstance(Person person) {
-        PersonDetailsFragment fragment = new PersonDetailsFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(MainActivity.PERSON_ATTRIBUTE, person);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            person = (Person) getArguments().getSerializable(MainActivity.PERSON_ATTRIBUTE);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person_details, container, false);
         ButterKnife.bind(this, view);
         displayPerson();
         return view;
+    }
+
+    public PersonDetailsFragment setPerson(Person person) {
+        this.person = person;
+        return this;
     }
 
     private void displayPerson() {

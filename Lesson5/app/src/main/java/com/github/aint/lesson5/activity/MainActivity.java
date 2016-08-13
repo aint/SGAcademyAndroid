@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
 
-    public static final String PERSON_ATTRIBUTE = "person";
     public static final String DISPLAY_PERSON_ATTRIBUTE = "display";
 
     private ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+    private PersonDetailsFragment personDetailsFragment = new PersonDetailsFragment();
 
     private List<Person> persons;
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onImageClick(View view) {
-        replaceFragment(PersonDetailsFragment.newInstance(viewPagerFragment.getCurrentPerson()));
+        replaceFragment(personDetailsFragment.setPerson(viewPagerFragment.getCurrentPerson()));
     }
 
     public void onBackButtonClick(View view) {
