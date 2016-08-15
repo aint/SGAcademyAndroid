@@ -13,14 +13,14 @@
         <EditText
             style="@style/editText"
             android:id="@+id/textFrom"
-            android:hint="@string/text_from"
-            />
+            android:hint="@string/text_from" />
 
         <EditText
             style="@style/editText"
             android:id="@+id/textTo"
             android:hint="@string/text_to"
-            />
+            android:focusable="false"
+            android:enabled="false" />
 
     </LinearLayout>
 
