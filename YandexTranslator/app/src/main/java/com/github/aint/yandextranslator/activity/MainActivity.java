@@ -1,5 +1,7 @@
 package com.github.aint.yandextranslator.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 
 public class MainActivity extends AppCompatActivity implements Callback<TranslateJsonResponse>, OnItemSelectedListener {
 
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     private static final String API_KEY = "trnsl.1.1.20160815T165258Z.23bee0520431f4c8.5466f3d425604ca53525b97b38a76fff39e468a0";
 
     private static final String SOMETHING_WENT_WRONG_TOAST = "Something went wrong. Try again";
+    private static final String TRANSLATED_TEXT_COPIED_TOAST = "Translated text copied";
 
     private static final String KEY_REQUEST_FIELD = "key";
     private static final String TEXT_REQUEST_FIELD = "text";
@@ -144,10 +149,23 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
         int itemId = item.getItemId();
         if (R.id.menu_ok == itemId) {
             translateText();
-        } else if (R.id.menu_lang == itemId) {
-
+        } else if (R.id.menu_clear == itemId) {
+            clearInputFields();
+        } else if (R.id.menu_copy == itemId) {
+            Toast.makeText(this, TRANSLATED_TEXT_COPIED_TOAST, LENGTH_SHORT).show();
+            copyToClipboard();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void copyToClipboard() {
+        ClipData clip = ClipData.newPlainText("", textToEditText.getHint());
+        ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
+    }
+
+    private void clearInputFields() {
+        textFromEditText.setText("");
+        textToEditText.setHint("");
     }
 
     @Override

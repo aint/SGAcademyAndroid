@@ -2,8 +2,9 @@
     <string name="app_name">YandexTranslator</string>
     <string name="text_from">Input text to translate</string>
     <string name="text_to">Translated text</string>
-    <string name="menu_lang">Select language</string>
+    <string name="menu_copy">Copy</string>
     <string name="menu_ok">Translate</string>
+    <string name="menu_clear">Clear</string>
 
     <string-array name="languages">
         <item>Afrikaans</item>
