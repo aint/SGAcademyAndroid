@@ -57,14 +57,16 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     private YandexTranslateService translateService = retrofit.create(YandexTranslateService.class);
 
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+
     private String langFrom = "English";
     private String langTo = "Ukrainian";
 
     @BindView(R.id.textFrom) EditText textFromEditText;
     @BindView(R.id.textTo) EditText textToEditText;
 
-    @BindView(R.id.lang_spinner1) Spinner langSpinner1;
-    @BindView(R.id.lang_spinner2) Spinner langSpinner2;
+    @BindView(R.id.lang_spinner1) Spinner fromLangSpinner;
+    @BindView(R.id.lang_spinner2) Spinner toLangSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,26 +77,25 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     }
 
     private void setUpLangSpinners() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.languages,
                 android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        initFromLangSpinner(adapter);
-        initToLangSpinner(adapter);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        initFromLangSpinner();
+        initToLangSpinner();
     }
 
-    private void initToLangSpinner(ArrayAdapter<CharSequence> adapter) {
-        langSpinner2.setAdapter(adapter);
-        langSpinner2.setSelection(adapter.getPosition(langTo));
-        langSpinner2.setOnItemSelectedListener(this);
+    private void initFromLangSpinner() {
+        fromLangSpinner.setAdapter(spinnerAdapter);
+        fromLangSpinner.setSelection(spinnerAdapter.getPosition(langFrom));
+        fromLangSpinner.setOnItemSelectedListener(this);
     }
 
-    private void initFromLangSpinner(ArrayAdapter<CharSequence> adapter) {
-        langSpinner1.setAdapter(adapter);
-        langSpinner1.setSelection(adapter.getPosition(langFrom));
-        langSpinner1.setOnItemSelectedListener(this);
+    private void initToLangSpinner() {
+        toLangSpinner.setAdapter(spinnerAdapter);
+        toLangSpinner.setSelection(spinnerAdapter.getPosition(langTo));
+        toLangSpinner.setOnItemSelectedListener(this);
     }
 
     private void translateText() {
@@ -166,6 +167,13 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     private void clearInputFields() {
         textFromEditText.setText("");
         textToEditText.setHint("");
+    }
+
+    public void onSwapLangButtonClick(View view) {
+        fromLangSpinner.setSelection(spinnerAdapter.getPosition(langTo));
+        toLangSpinner.setSelection(spinnerAdapter.getPosition(langFrom));
+        langFrom = fromLangSpinner.getSelectedItem().toString();
+        langTo = toLangSpinner.getSelectedItem().toString();
     }
 
     @Override

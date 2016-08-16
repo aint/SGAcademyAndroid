@@ -22,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.3"
             android:id="@+id/swap"
+            android:onClick="onSwapLangButtonClick"
             android:background="@drawable/ic_action_swap"
             android:layout_gravity="center_vertical"/>
 
