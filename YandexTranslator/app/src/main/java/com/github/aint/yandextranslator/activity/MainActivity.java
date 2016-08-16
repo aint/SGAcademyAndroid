@@ -7,10 +7,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.github.aint.yandextranslator.R;
+import com.github.aint.yandextranslator.lang.Language;
 import com.github.aint.yandextranslator.model.TranslateJsonResponse;
 import com.github.aint.yandextranslator.service.YandexTranslateService;
 import com.google.gson.Gson;
@@ -27,7 +32,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity implements Callback<TranslateJsonResponse> {
+public class MainActivity extends AppCompatActivity implements Callback<TranslateJsonResponse>, OnItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -47,14 +52,44 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     private YandexTranslateService translateService = retrofit.create(YandexTranslateService.class);
 
+    private String langFrom = "English";
+    private String langTo = "Ukrainian";
+
     @BindView(R.id.textFrom) EditText textFromEditText;
     @BindView(R.id.textTo) EditText textToEditText;
+
+    @BindView(R.id.lang_spinner1) Spinner langSpinner1;
+    @BindView(R.id.lang_spinner2) Spinner langSpinner2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setUpLangSpinners();
+    }
+
+    private void setUpLangSpinners() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.languages,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        initFromLangSpinner(adapter);
+        initToLangSpinner(adapter);
+    }
+
+    private void initToLangSpinner(ArrayAdapter<CharSequence> adapter) {
+        langSpinner2.setAdapter(adapter);
+        langSpinner2.setSelection(adapter.getPosition(langTo));
+        langSpinner2.setOnItemSelectedListener(this);
+    }
+
+    private void initFromLangSpinner(ArrayAdapter<CharSequence> adapter) {
+        langSpinner1.setAdapter(adapter);
+        langSpinner1.setSelection(adapter.getPosition(langFrom));
+        langSpinner1.setOnItemSelectedListener(this);
     }
 
     private void translateText() {
@@ -66,8 +101,13 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
         Map<String, String> map = new TreeMap<>();
         map.put(KEY_REQUEST_FIELD, API_KEY);
         map.put(TEXT_REQUEST_FIELD, textFromEditText.getText().toString());
-        map.put(LANG_REQUEST_FIELD, "en-uk");
+        map.put(LANG_REQUEST_FIELD, getLangCodes());
         return map;
+    }
+
+    private String getLangCodes() {
+        return Language.valueOf(langFrom.toUpperCase()).getLangCode()
+                + "-" +  Language.valueOf(langTo.toUpperCase()).getLangCode();
     }
 
     @Override
@@ -109,4 +149,17 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Spinner spinner = (Spinner) parent;
+        if (spinner.getId() == R.id.lang_spinner1) {
+            langFrom = parent.getItemAtPosition(position).toString();
+        } else if (spinner.getId() == R.id.lang_spinner2) {
+            langTo = parent.getItemAtPosition(position).toString();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 }

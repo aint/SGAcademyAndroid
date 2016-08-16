@@ -5,10 +5,43 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
+        android:id="@+id/panel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/lang_spinner1"
+            android:entries="@array/languages" />
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:id="@+id/swap"
+            android:background="@drawable/ic_action_swap"
+            android:layout_gravity="center_vertical"/>
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/lang_spinner2"
+            android:entries="@array/languages" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:layout_below="@+id/panel"
+        android:layout_alignParentBottom="true">
 
         <EditText
             style="@style/editText"
