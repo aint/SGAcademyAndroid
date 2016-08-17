@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -19,12 +20,15 @@ import android.widget.Toast;
 
 import com.github.aint.yandextranslator.R;
 import com.github.aint.yandextranslator.lang.Language;
+import com.github.aint.yandextranslator.model.DetectJsonResponse;
 import com.github.aint.yandextranslator.model.TranslateJsonResponse;
 import com.github.aint.yandextranslator.service.YandexTranslateService;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -130,7 +134,19 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     }
 
     private String getLangCodes() {
-        return Language.valueOf(langFrom).getLangCode() + "-" +  Language.valueOf(langTo).getLangCode();
+        String langCodeFrom = detectInputLanguage();
+        langFrom = Language.lookUp(langCodeFrom).name();
+        fromLangSpinner.setSelection(spinnerAdapter.getPosition(langFrom));
+        return langCodeFrom + "-" +  Language.valueOf(langTo).getLangCode();
+    }
+
+    private String detectInputLanguage() {
+        try {
+            return new DetectLangAsyncTask().execute(textFromEditText.getText().toString()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return Language.valueOf(langFrom).getLangCode();
     }
 
     @Override
@@ -207,4 +223,20 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
+
+    private class DetectLangAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                DetectJsonResponse jsonResponse = translateService.detect(API_KEY, params[0]).execute().body();
+                if (jsonResponse.getCode() == 200) {
+                    return jsonResponse.getLang();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

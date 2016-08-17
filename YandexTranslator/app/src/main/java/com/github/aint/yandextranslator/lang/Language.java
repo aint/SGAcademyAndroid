@@ -98,7 +98,7 @@ public enum Language {
                 return language;
             }
         }
-        return null;
+        return English;
     }
 
     public String getLangCode() {
