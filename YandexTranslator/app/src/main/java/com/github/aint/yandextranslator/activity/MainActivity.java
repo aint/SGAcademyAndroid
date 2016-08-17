@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     private ArrayAdapter<CharSequence> spinnerAdapter;
 
-    private String langFrom = "English";
-    private String langTo = "Ukrainian";
+    private String langFrom = Language.Ukrainian.name();
+    private String langTo = Language.Ukrainian.name();
 
     @BindView(R.id.textFrom) EditText textFromEditText;
     @BindView(R.id.textTo) EditText textToEditText;
@@ -94,8 +94,12 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     private void initToLangSpinner() {
         toLangSpinner.setAdapter(spinnerAdapter);
-        toLangSpinner.setSelection(spinnerAdapter.getPosition(langTo));
+        toLangSpinner.setSelection(spinnerAdapter.getPosition(getDefaultLocale().name()));
         toLangSpinner.setOnItemSelectedListener(this);
+    }
+
+    private Language getDefaultLocale() {
+        return Language.lookUp(getResources().getConfiguration().locale.getLanguage());
     }
 
     private void translateText() {
@@ -112,8 +116,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     }
 
     private String getLangCodes() {
-        return Language.valueOf(langFrom.toUpperCase()).getLangCode()
-                + "-" +  Language.valueOf(langTo.toUpperCase()).getLangCode();
+        return Language.valueOf(langFrom).getLangCode() + "-" +  Language.valueOf(langTo).getLangCode();
     }
 
     @Override
