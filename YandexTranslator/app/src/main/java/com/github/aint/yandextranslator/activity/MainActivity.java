@@ -1,5 +1,6 @@
 package com.github.aint.yandextranslator.activity;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     private static final String SOMETHING_WENT_WRONG_TOAST = "Something went wrong. Try again";
     private static final String TRANSLATED_TEXT_COPIED_TOAST = "Translated text copied";
+    private static final String PROGGRESS_DIALOG_MESSAGE = "Translating...";
 
     private static final String KEY_REQUEST_FIELD = "key";
     private static final String TEXT_REQUEST_FIELD = "text";
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     @BindView(R.id.lang_spinner1) Spinner fromLangSpinner;
     @BindView(R.id.lang_spinner2) Spinner toLangSpinner;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,16 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setUpLangSpinners();
+        initProgressDialog();
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(PROGGRESS_DIALOG_MESSAGE);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressNumberFormat(null);
+        progressDialog.setProgressPercentFormat(null);
     }
 
     private void setUpLangSpinners() {
@@ -105,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
     private void translateText() {
         hideKeyboard();
         translateService.translate(getRequestFieldMap()).enqueue(this);
+        progressDialog.show();
     }
 
     private Map<String, String> getRequestFieldMap() {
@@ -121,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     @Override
     public void onResponse(Call<TranslateJsonResponse> call, Response<TranslateJsonResponse> response) {
+        progressDialog.dismiss();
         if (response.code() == 200) {
             String textTo = response.body().getText()[0];
             textToEditText.setHint(textTo);
@@ -131,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Translat
 
     @Override
     public void onFailure(Call<TranslateJsonResponse> call, Throwable t) {
+        progressDialog.dismiss();
         Toast.makeText(this, SOMETHING_WENT_WRONG_TOAST, Toast.LENGTH_LONG).show();
     }
 
