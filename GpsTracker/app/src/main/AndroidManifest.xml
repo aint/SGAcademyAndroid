@@ -20,7 +20,7 @@
         </activity>
 
         <service
-            android:name=".service.GpsService"
+            android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true">
         </service>
