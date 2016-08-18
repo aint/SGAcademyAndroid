@@ -18,6 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.GpsService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCijxSkVp67U75o0GAIzpsT5Th8nei2irk"/>
     </application>
 
 </manifest>
